@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: endgame-svc-account
+      containers:
+      - name: backend
+        image: ${BACKEND_IMAGE}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: 250m
+            memory: 200Mi
+          limits:
+            cpu: 500m
+            memory: 250Mi
+        volumeMounts:
+        - name: secret-volume
+          mountPath: "/mnt/secrets"
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: username_01
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: password_01
+        - name: DB
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: db_01
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: host_01
+      volumes:
+      - name: secret-volume
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: test-k8s-secrets

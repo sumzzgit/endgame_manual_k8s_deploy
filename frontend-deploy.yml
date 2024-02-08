@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forntend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend #this should be matched with the container labels
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: ${FRONTEND_IMAGE}
+        imagePullPolicy: Always
+        ports:
+        - name: frontend-port
+          containerPort: 5000
+        env:
+        - name: BACKEND_URL
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: backend_url_01
+        resources:
+          limits: # the maximum memory and cpu allocated to pods is 250Mb and 500m(milicore) means 1/2 of the 1 cpu core
+            memory: 250Mi
+            cpu: 500m
+          requests: # pods are allocated minimum of the 200Mi and 250m(1/4 of the 1 cpu core) memory and cpu 
+            memory: 200Mi
+            cpu: 250m
+      volumes:
+      - name: secret-volume
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: test-k8s-secrets
+
+
+

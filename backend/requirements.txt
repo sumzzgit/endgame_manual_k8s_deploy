@@ -1,0 +1,3 @@
+flask
+# psycopg2-binary -> this is for the postgresql 
+mysql-connector-python #this is for the mysql db

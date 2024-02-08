@@ -1,0 +1,23 @@
+install helm
+
+-> we need to install the Secrets Store CSI Driver in the cluster so use helm for installation
+
+helm repo add secrets-store-csi-driver \
+  https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+
+helm install -n kube-system csi-secrets-store \
+  --set syncSecret.enabled=true \
+  --set enableSecretRotation=true \
+  secrets-store-csi-driver/secrets-store-csi-driver
+
+
+-> now there many providers for this driver like azure , aws and gcp . we need to install the 
+aws ASCP (AWS Secrets and Configuration Provider )
+
+kubectl apply -f https://raw.githubusercontent.com/aws/secrets-store-csi-driver-provider-aws/main/deployment/aws-provider-installer.yaml
+
+-> now we need to deploy the secretproviderclass 
+
+-> then create the policy which has the read access to the aws secrets manager and annotate this to the service account (OIDC for IAM) , IRSA(IAM Role for Service Account)
+
+-> we can use the service account to deploy the pod and mount the secretproviderclass as volume or set as the env inside the container .

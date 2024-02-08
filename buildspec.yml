@@ -1,0 +1,21 @@
+version: 0.2
+env:
+  secrets-manager:
+    DB_USER: "endgame:db_user"
+    DB_PASS: "endgame:db_pass"
+    DB_HOST: "endgame:db_host"
+    DB: "endgame:db"
+    BACKEND_URL: "endgame:backend_url"
+    FRONTEND_REPO_URI: "endgame:fronted_repo_uri"
+    REGION: "endgame:region"
+    BACKEND_REPO_URI: "endgame:backend_repo_uri"
+    FRONTEND_TASK_FAMILY: "endgame:frontend_task_family"
+    BACKEND_TASK_FAMILY: "endgame:backend_task_family"
+phases:
+  install:
+    commands:
+    - sudo yum install docker -y
+  pre_build:
+  - aws sts get-caller-identity
+  -
+
