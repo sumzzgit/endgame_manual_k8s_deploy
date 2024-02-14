@@ -17,7 +17,7 @@ spec:
       serviceAccountName: endgame-svc-account
       containers:
       - name: backend
-        image: ${BACKEND_REPO_URI}:latest
+        image: ${BACKEND_REPO_URI}:${BACKEND_VERSION}
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
