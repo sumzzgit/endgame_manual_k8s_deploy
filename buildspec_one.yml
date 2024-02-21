@@ -96,7 +96,7 @@ phases:
 
     # - aws s3 cp k8s_reprt.txt s3://sumzzbucket11/IMG_REPORTS/
     - tar -cvf reports.tar reports
-    - aws s3 cp k8s_reprt.txt s3://sumzzbucket11/IMG_REPORTS/
+    - aws s3 cp reports.tar s3://sumzzbucket11/IMG_REPORTS/
 
 artifacts:
   files:
