@@ -55,6 +55,7 @@ phases:
   build:
     commands:
     - echo "------ Generating the Image Scan Report ------"
+    - cd ../
     - mkdir reports
     - trivy image backend >> reports/IMGSCAN_backend_Report.txt
     - trivy image frontend >> reports/IMGSCAN_frontend_Report.txt
@@ -73,7 +74,7 @@ phases:
     - echo "------ logging into eks ------"
     - aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${REGION}
     - echo "------ changing the providerclass_tmp.yml file values ------"
-    - cd ../
+    # - cd ../
     - envsubst < providerclass_tmp.yml > providerclass.yml
 
     - echo "------ changing the backend-deploy_tmp.yml file values ------"
