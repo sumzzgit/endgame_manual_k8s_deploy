@@ -26,3 +26,18 @@ kubectl apply -f https://raw.githubusercontent.com/aws/secrets-store-csi-driver-
 reference -> How do I resolve the "Your current user or role does not have access to Kubernetes objects on this EKS cluster" error in Amazon EKS? ->
 
 https://repost.aws/knowledge-center/eks-kubernetes-object-access-error
+
+
+------
+to add the role to the cluster for the access ->
+edit the config present in kube-system namespace called "aws-auth"
+and these to the data
+  mapRoles: |
+    - rolearn: arn:aws:iam::533267334695:role/eks-access-role-for-codebuild
+      username: codebuildrole
+      groups:
+      - system:bootstrappers
+      - system:nodes
+      - system:masters
+
+adding system masters in the production is not good practise , becouse it provides admin access to the cluster.
