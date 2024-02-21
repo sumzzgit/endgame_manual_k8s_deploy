@@ -27,7 +27,7 @@ phases:
     - sudo rpm -ivh https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.rpm
   pre_build:
     commands:
-    - sudo usermod -aG docker $USER
+    - sudo usermod -a -G docker $USER
     - aws sts get-caller-identity
     - cd frontend
     - echo "------ logging into the python ecr repo ------"
