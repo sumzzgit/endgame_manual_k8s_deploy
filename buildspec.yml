@@ -13,6 +13,7 @@ env:
     # add the base64 encoded value of kubeconfig file in secret manager
     # use the command "base64 -w 0" to avoid the line breaks 
     KUBECONFIG_DATA: "arn:aws:secretsmanager:ap-south-1:654654515013:secret:kubeconfig-esFQ7T"
+    ECRsecret: "endgame:ECRsecret_name"
 
 phases:
   install:
@@ -79,6 +80,13 @@ phases:
 
   post_build:
     commands:
+    - echo "------ creating the ECR imagepull secret --------"
+    - kubectl create secret docker-registry ${ECRsecret} \
+      --docker-server=${ACC_NO}.dkr.ecr.${REGION}.amazonaws.com \
+      --docker-username=AWS \
+      --docker-password=$(aws ecr get-login-password) \
+      --namespace=default
+
     - echo "------ applying the manifest files ------"
     - kubectl apply -f secret.yml
     - kubectl apply -f backend-deploy.yml
