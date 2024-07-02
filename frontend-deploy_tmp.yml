@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+        image: ${FRONTEND_REPO_URI}:latest
         imagePullPolicy: Always
         ports:
         - name: frontend-port
