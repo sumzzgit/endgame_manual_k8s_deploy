@@ -10,6 +10,7 @@ env:
     REGION: "endgame:region"
     ACC_NO: "endgame:acc_no"
     BACKEND_REPO_URI: "endgame:backend_repo_uri"
+    # add the base64 encoded value of kubeconfig file in secret manager
     KUBECONFIG: "arn:aws:secretsmanager:ap-south-1:654654515013:secret:kubeconfig-esFQ7T"
 
 phases:
@@ -51,7 +52,7 @@ phases:
 
     - echo "------ setting the KUBECONFIG ------"
     - mkdir ~/.kube
-    - echo ${KUBECONFIG} > ~/.kube/config
+    - echo ${KUBECONFIG} | base64 -d > ~/.kube/config
     - cat ~/.kube/config
 
     - echo "------ changing the secret_tmp.yml file values ------"
