@@ -24,28 +24,28 @@ phases:
   pre_build:
     commands:
     - aws sts get-caller-identity
-    - cd frontend
-    - echo "------ logging into the python ecr repo ------"
-    - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${ACC_NO}.dkr.ecr.ap-south-1.amazonaws.com
-    - echo "------ building the docker images ------"
-    - sudo docker build -t frontend -f Dockerfile-modified .
-    - sudo docker tag frontend ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-    - sudo docker tag frontend ${FRONTEND_REPO_URI}:latest
-    - cd ../backend/
-    - sudo docker build -t backend .
-    - sudo docker tag backend ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-    - sudo docker tag backend ${BACKEND_REPO_URI}:latest
+    # - cd frontend
+  # - echo "------ logging into the python ecr repo ------"
+  # - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${ACC_NO}.dkr.ecr.ap-south-1.amazonaws.com
+  # - echo "------ building the docker images ------"
+  # - sudo docker build -t frontend -f Dockerfile-modified .
+  # - sudo docker tag frontend ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+  # - sudo docker tag frontend ${FRONTEND_REPO_URI}:latest
+  # - cd ../backend/
+  # - sudo docker build -t backend .
+  # - sudo docker tag backend ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+  # - sudo docker tag backend ${BACKEND_REPO_URI}:latest
 
 
-    - echo "------ pushing docker images ------"
-    - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${FRONTEND_REPO_URI}
-    - sudo docker push ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-    - sudo docker push ${FRONTEND_REPO_URI}:latest
+  # - echo "------ pushing docker images ------"
+  # - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${FRONTEND_REPO_URI}
+  # - sudo docker push ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+  # - sudo docker push ${FRONTEND_REPO_URI}:latest
 
 
-    - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${BACKEND_REPO_URI}
-    - sudo docker push ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-    - sudo docker push ${BACKEND_REPO_URI}:latest
+  # - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${BACKEND_REPO_URI}
+  # - sudo docker push ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+  # - sudo docker push ${BACKEND_REPO_URI}:latest
 
   build:
     commands:
@@ -53,6 +53,8 @@ phases:
     - echo "------ setting the KUBECONFIG ------"
     - mkdir ~/.kube
     - echo ${KUBECONFIG} > ~/kubeconfig_base64.txt
+    - cat ~/kubeconfig_base64.txt
+    - base64 -d ~/kubeconfig_base64.txt
     - base64 -d ~/kubeconfig_base64.txt > ~/.kube/config
     - cat ~/.kube/config
 
