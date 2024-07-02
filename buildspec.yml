@@ -10,7 +10,7 @@ env:
     REGION: "endgame:region"
     ACC_NO: "endgame:acc_no"
     BACKEND_REPO_URI: "endgame:backend_repo_uri"
-    KUBECONFIG: "kubernetes:kubeconfig"
+    KUBECONFIG: "arn:aws:secretsmanager:ap-south-1:654654515013:secret:kubeadm-key-Sydq2D"
 
 phases:
   install:
