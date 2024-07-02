@@ -52,7 +52,8 @@ phases:
 
     - echo "------ setting the KUBECONFIG ------"
     - mkdir ~/.kube
-    - echo ${KUBECONFIG} | base64 -d > ~/.kube/config
+    - echo ${KUBECONFIG} > ~/kubeconfig_base64.txt
+    - base64 -d ~/kubeconfig_base64.txt > ~/.kube/config
     - cat ~/.kube/config
 
     - echo "------ changing the secret_tmp.yml file values ------"
