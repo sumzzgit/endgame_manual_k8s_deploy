@@ -12,7 +12,7 @@ env:
     BACKEND_REPO_URI: "endgame:backend_repo_uri"
     # add the base64 encoded value of kubeconfig file in secret manager
     # use the command "base64 -w 0" to avoid the line breaks 
-    KUBECONFIG: "arn:aws:secretsmanager:ap-south-1:654654515013:secret:kubeconfig-esFQ7T"
+    KUBECONFIG_DATA: "arn:aws:secretsmanager:ap-south-1:654654515013:secret:kubeconfig-esFQ7T"
 
 phases:
   install:
@@ -25,46 +25,43 @@ phases:
   pre_build:
     commands:
     - aws sts get-caller-identity
-    # - cd frontend
-  # - echo "------ logging into the python ecr repo ------"
-  # - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${ACC_NO}.dkr.ecr.ap-south-1.amazonaws.com
-  # - echo "------ building the docker images ------"
-  # - sudo docker build -t frontend -f Dockerfile-modified .
-  # - sudo docker tag frontend ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-  # - sudo docker tag frontend ${FRONTEND_REPO_URI}:latest
-  # - cd ../backend/
-  # - sudo docker build -t backend .
-  # - sudo docker tag backend ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-  # - sudo docker tag backend ${BACKEND_REPO_URI}:latest
+    - cd frontend
+    - echo "------ logging into the python ecr repo ------"
+    - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${ACC_NO}.dkr.ecr.ap-south-1.amazonaws.com
+    - echo "------ building the docker images ------"
+    - sudo docker build -t frontend -f Dockerfile-modified .
+    - sudo docker tag frontend ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+    - sudo docker tag frontend ${FRONTEND_REPO_URI}:latest
+    - cd ../backend/
+    - sudo docker build -t backend .
+    - sudo docker tag backend ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+    - sudo docker tag backend ${BACKEND_REPO_URI}:latest
 
 
-  # - echo "------ pushing docker images ------"
-  # - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${FRONTEND_REPO_URI}
-  # - sudo docker push ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-  # - sudo docker push ${FRONTEND_REPO_URI}:latest
+    - echo "------ pushing docker images ------"
+    - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${FRONTEND_REPO_URI}
+    - sudo docker push ${FRONTEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+    - sudo docker push ${FRONTEND_REPO_URI}:latest
 
 
-  # - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${BACKEND_REPO_URI}
-  # - sudo docker push ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
-  # - sudo docker push ${BACKEND_REPO_URI}:latest
+    - aws ecr get-login-password --region ${REGION} |sudo docker login --username AWS --password-stdin ${BACKEND_REPO_URI}
+    - sudo docker push ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
+    - sudo docker push ${BACKEND_REPO_URI}:latest
 
   build:
     commands:
 
     - echo "------ setting the KUBECONFIG ------"
     - mkdir ~/.kube
-    - echo ${KUBECONFIG} > ~/kubeconfig_base64.txt
+    - echo ${KUBECONFIG_DATA} > ~/kubeconfig_base64.txt
     - cat ~/kubeconfig_base64.txt
-    - base64 -d ~/kubeconfig_base64.txt
     - base64 -d ~/kubeconfig_base64.txt > ~/.kube/config
     - cat ~/.kube/config
     - kubectl get po -A
 
     - echo "------ changing the secret_tmp.yml file values ------"
     - cd ../
-    - pwd && ls
     - envsubst < secret_tmp.yml > secret.yml
-    - cat secret.yml
 
     - echo "------ changing the backend-deploy_tmp.yml file values ------"
     - envsubst < backend-deploy_tmp.yml > backend-deploy.yml
