@@ -26,21 +26,11 @@ spec:
           valueFrom:
             secretKeyRef:
               name: endgame-secret
-              key: backend_url_01
+              key: backend_url
         resources:
-          limits: # the maximum memory and cpu allocated to pods is 250Mb and 500m(milicore) means 1/2 of the 1 cpu core
-            memory: 250Mi
-            cpu: 500m
-          requests: # pods are allocated minimum of the 200Mi and 250m(1/4 of the 1 cpu core) memory and cpu 
-            memory: 200Mi
-            cpu: 250m
-      volumes:
-      - name: secret-volume
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: test-k8s-secrets
-
-
-
+          limits:
+            memory: 100Mi
+            cpu: 100m
+          requests:
+            memory: 100Mi
+            cpu: 100m

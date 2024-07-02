@@ -23,39 +23,29 @@ spec:
         - containerPort: 5000
         resources:
           requests:
-            cpu: 250m
-            memory: 200Mi
+            cpu: 100m
+            memory: 100Mi
           limits:
-            cpu: 500m
-            memory: 250Mi
-        volumeMounts:
-        - name: secret-volume
-          mountPath: "/mnt/secrets"
+            cpu: 100m
+            memory: 100Mi
         env:
         - name: DB_USER
           valueFrom:
             secretKeyRef:
               name: endgame-secret
-              key: username_01
+              key: db_user
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
               name: endgame-secret
-              key: password_01
+              key: db_pass
         - name: DB
           valueFrom:
             secretKeyRef:
               name: endgame-secret
-              key: db_01
+              key: db_name
         - name: DB_HOST
           valueFrom:
             secretKeyRef:
               name: endgame-secret
-              key: host_01
-      volumes:
-      - name: secret-volume
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: test-k8s-secrets
+              key: db_host
