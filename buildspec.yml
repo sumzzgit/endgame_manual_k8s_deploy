@@ -82,15 +82,11 @@ phases:
     commands:
     - echo "------ creating the ECR imagepull secret --------"
     - |
-      cat <<EOF > run.sh
       kubectl create secret docker-registry ${ECRsecret} \
       --docker-server=${ACC_NO}.dkr.ecr.${REGION}.amazonaws.com \
       --docker-username=AWS \
       --docker-password=$(aws ecr get-login-password) \
-      --namespace=default 2>&1 > /dev/null
-      EOF 
-    - chmod +x run.sh
-    - ./run.sh
+      --namespace=default 2> /dev/null
 
     - echo "------ applying the manifest files ------"
     - kubectl apply -f secret.yml
