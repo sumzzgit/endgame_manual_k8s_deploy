@@ -81,7 +81,7 @@ phases:
   post_build:
     commands:
     - echo "------ creating the ECR imagepull secret --------"
-    - kubectl create secret docker-registry ${ECRsecret} --docker-server=${ACC_NO}.dkr.ecr.${REGION}.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password) --namespace=default 2> /dev/null
+    - kubectl create secret docker-registry ${ECRsecret} --docker-server=${ACC_NO}.dkr.ecr.${REGION}.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password) --namespace=default
 
     - echo "------ applying the manifest files ------"
     - kubectl apply -f secret.yml
