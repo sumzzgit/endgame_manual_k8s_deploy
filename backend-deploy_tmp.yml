@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: ${BACKEND_REPO_URI}:latest
+        image: ${BACKEND_REPO_URI}:${CODEBUILD_BUILD_NUMBER}
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
