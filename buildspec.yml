@@ -60,6 +60,7 @@ phases:
     - cat ~/.kube/config
     - kubectl get po -A
 
+    # use this encoding when you use data in the secret.yml instead of stringData
     # - echo "---------- encoding the values to BASE64 -----------------"
     # - DB_USER_BASE64=$(echo ${DB_USER} | base64 -w 0)
     # - DB_BASE64=$(echo ${DB} | base64 -w 0)
