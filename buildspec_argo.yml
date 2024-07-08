@@ -80,6 +80,7 @@ phases:
   post_build:
     commands:
     - echo "------ setting the github origin ------"
+    - pwd && ls
     # - echo "------ applying the manifest files ------"
     - git config --global user.name sumzz
     - git config --global user.email test@sumzz.online
