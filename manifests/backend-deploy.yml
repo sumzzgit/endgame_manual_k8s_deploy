@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: 654654515013.dkr.ecr.ap-south-1.amazonaws.com/backend:16
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: db_user
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: db_pass
+        - name: DB
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: db_name
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: endgame-secret
+              key: db_host
+      imagePullSecrets:
+      - name: 
+
