@@ -4,6 +4,8 @@ metadata:
   name: forntend-deployment
   labels:
     app: frontend
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   replicas: 2
   selector:
@@ -16,7 +18,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: 654654515013.dkr.ecr.ap-south-1.amazonaws.com/frontend:26
+        image: 654654515013.dkr.ecr.ap-south-1.amazonaws.com/frontend:27
         imagePullPolicy: Always
         ports:
         - name: frontend-port
@@ -34,5 +36,3 @@ spec:
           requests:
             memory: 100Mi
             cpu: 100m
-      imagePullSecrets:
-      - name: 

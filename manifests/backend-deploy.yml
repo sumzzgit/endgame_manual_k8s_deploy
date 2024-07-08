@@ -4,6 +4,8 @@ metadata:
   name: backend
   labels:
     app: backend
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   selector:
     matchLabels:
@@ -16,7 +18,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: 654654515013.dkr.ecr.ap-south-1.amazonaws.com/backend:26
+        image: 654654515013.dkr.ecr.ap-south-1.amazonaws.com/backend:27
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
@@ -48,6 +50,3 @@ spec:
             secretKeyRef:
               name: endgame-secret
               key: db_host
-      imagePullSecrets:
-      - name: 
-
