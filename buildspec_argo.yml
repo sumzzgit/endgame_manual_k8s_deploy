@@ -89,7 +89,7 @@ phases:
     - git branch -M main
     - test=$(git remote add origin https://${GIT_USER}:${GIT_PAT}@github.com/${GIT_USER}/${GIT_REPO})
     - echo $test
-    - git remote add origin https://${GIT_USER}:${GIT_PAT}@github.com/${GIT_USER}/${GIT_REPO}
+    - git remote set-url origin https://${GIT_USER}:${GIT_PAT}@github.com/${GIT_USER}/${GIT_REPO}
     # check the PAT expiry time before running 
     - git add .
     - git commit -m "pipeline-commit-${CODEBUILD_BUILD_NUMBER}"
