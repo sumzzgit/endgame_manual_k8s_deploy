@@ -80,9 +80,10 @@ phases:
   post_build:
     commands:
     - echo "------ setting the github origin ------"
+    - export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
     - cd ..
     - pwd
-    - ls
+    - ls -a
     # - echo "------ applying the manifest files ------"
     - git config --global user.name sumzz
     - git config --global user.email test@sumzz.online
