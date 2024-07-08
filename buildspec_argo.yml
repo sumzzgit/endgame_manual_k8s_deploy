@@ -82,19 +82,17 @@ phases:
     - echo "------ setting the github origin ------"
     - export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
     - cd ..
-    - ls -al
-    - pwd
-    - find ./ -type d -name .git
     # - echo "------ applying the manifest files ------"
     - git config --global user.name sumzz
     - git config --global user.email test@sumzz.online
-    # - git init
-    # - git branch -M main
+    - git init
+    - git branch -M main
     - test=$(git remote add origin https://${GIT_USER}:${GIT_PAT}@github.com/${GIT_USER}/${GIT_REPO})
     - echo $test
     - git remote set-url origin https://${GIT_USER}:${GIT_PAT}@github.com/${GIT_USER}/${GIT_REPO}
     # check the PAT expiry time before running 
     - git add .
     - git commit -m "pipeline-commit-${CODEBUILD_BUILD_NUMBER}"
-    # - git pull
+    - git branch --set-upstream-to=origin/main main
+    - git pull
     - git push origin main
