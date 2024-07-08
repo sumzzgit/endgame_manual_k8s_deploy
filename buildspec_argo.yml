@@ -56,18 +56,10 @@ phases:
   build:
     commands:
 
-    - echo "------ getting the temporary creds ------"
-    - CREDS=$(aws sts assume-role --role-arn ${ASSUME_ROLE_ARN} --role-session-name codebuild --duration-seconds 900)
-    - export AWS_ACCESS_KEY_ID="$(echo ${CREDS} | jq -r '.Credentials.AccessKeyId')"
-    - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDS} | jq -r '.Credentials.SecretAccessKey')"
-    - export AWS_SESSION_TOKEN="$(echo ${CREDS} | jq -r '.Credentials.SessionToken')"
-    - export AWS_EXPIRATION=$(echo ${CREDS} | jq -r '.Credentials.Expiration')
-
-    - echo "------ logging into eks ------"
-    - aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${REGION}
-
     - echo "------ changing the secret_tmp.yml file values ------"
     - cd ../
+    - git clone https://github.com/${GIT_USER}/${GIT_REPO}
+    - cd ${GIT_REPO}
     - envsubst < secret_tmp.yml > manifests/secret.yml
 
     - echo "------ changing the backend-deploy_tmp.yml file values ------"
@@ -80,11 +72,6 @@ phases:
   post_build:
     commands:
     - echo "------ setting the github origin ---- --"
-    - export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
-    - cd ..
-    - pwd
-    - ls
-    - find / -type d -name .git
     # - echo "------ applying the manifest files ------"
     - git config --global user.name sumzz
     - git config --global user.email test@sumzz.online
@@ -94,5 +81,4 @@ phases:
     # check the PAT expiry time before running 
     - git add .
     - git commit -m "pipeline-commit-${CODEBUILD_BUILD_NUMBER}"
-    - git pull
     - git push origin main
