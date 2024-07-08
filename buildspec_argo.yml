@@ -82,6 +82,9 @@ phases:
     - echo "------ setting the github origin ------"
     - export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
     - cd ..
+    - ls -al
+    - pwd
+    - find ./ -type d -name .git
     # - echo "------ applying the manifest files ------"
     - git config --global user.name sumzz
     - git config --global user.email test@sumzz.online
