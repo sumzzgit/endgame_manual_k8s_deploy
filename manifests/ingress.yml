@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: endgame-ing
+  annotations:
+    nginx.ingress.kubernetes.io/scheme: internet-facing
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80

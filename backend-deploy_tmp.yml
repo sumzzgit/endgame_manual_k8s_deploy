@@ -4,6 +4,8 @@ metadata:
   name: backend
   labels:
     app: backend
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   selector:
     matchLabels:
@@ -48,6 +50,3 @@ spec:
             secretKeyRef:
               name: endgame-secret
               key: db_host
-      imagePullSecrets:
-      - name: ${ECRsecret}
-
