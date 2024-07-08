@@ -93,4 +93,5 @@ phases:
     # check the PAT expiry time before running 
     - git add .
     - git commit -m "pipeline-commit-${CODEBUILD_BUILD_NUMBER}"
+    - git pull
     - git push origin main
