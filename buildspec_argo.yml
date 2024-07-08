@@ -82,11 +82,12 @@ phases:
     - echo "------ setting the github origin ------"
     - export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
     - cd ..
-    - pwd
-    - ls -a
+    - git init
     # - echo "------ applying the manifest files ------"
     - git config --global user.name sumzz
     - git config --global user.email test@sumzz.online
+    - test=$(git remote set-url origin https://${GIT_USER}:${GIT_PAT}@github.com/${GIT_USER}/${GIT_REPO})
+    - echo $test
     - git remote set-url origin https://${GIT_USER}:${GIT_PAT}@github.com/${GIT_USER}/${GIT_REPO}
     # check the PAT expiry time before running 
     - git add .
