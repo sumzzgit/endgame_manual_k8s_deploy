@@ -50,3 +50,5 @@ spec:
             secretKeyRef:
               name: endgame-secret
               key: db_host
+      imagePullSecrets:
+      - name: ${ECRsecret}
