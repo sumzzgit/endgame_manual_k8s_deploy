@@ -85,7 +85,22 @@ jobs:
         kubectl get po -A
 
     - name: check ecr imagepullsecrets secret
-      run: if kubectl get secret $ECRsecret --namespace default; then echo "Secret $ECRsecret already exists"; else kubectl create secret docker-registry $ECRsecret --docker-server=${{ env.ACC_NO }}.dkr.ecr.${{ env.REGION }}.amazonaws.com --docker-username=AWS --docker-password=${{ steps.login-ecr.outputs.docker_password_123456789012_dkr_ecr_ap_south_1_amazonaws_com }} --namespace=default; fi
+      run: | 
+        cat << 'EOF' > script.sh
+        #!/bin/bash
+
+        ECRsecret="${{ env.ECRsecret }}"
+
+        if kubectl get secret ${{ env.ECRsecret }} --namespace default; then 
+          echo "Secret ${{ env.ECRsecret }} already exists"
+        else 
+          kubectl create secret docker-registry ${{ env.ECRsecret }} \
+            --docker-server=${{ env.ACC_NO }}.dkr.ecr.${{ env.REGION }}.amazonaws.com \
+            --docker-username=AWS \
+            --docker-password=${{ steps.login-ecr.outputs.        docker_password_123456789012_dkr_ecr_ap_south_1_amazonaws_com }} \
+            --namespace=default
+        fi
+        EOF
 
     - name: Deploy to kubernetes
       run: |
