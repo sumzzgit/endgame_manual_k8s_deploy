@@ -72,6 +72,8 @@ jobs:
         docker push ${{ env.FRONTEND_REPO_URI }}:latest
 
     - name: replace the environment variables in deployment file
+      env: 
+        CODEBUILD_BUILD_NUMBER: ${{ steps.commit.outputs.short }}
       run: |
         envsubst < secret_tmp.yml > secret.yml
         envsubst < backend-deploy_tmp.yml > backend-deploy.yml
