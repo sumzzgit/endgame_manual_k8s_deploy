@@ -1,0 +1,97 @@
+name: Deploy to k8s
+
+on:
+
+  push:
+    branches: [main]
+
+env:
+  BACKEND_REPO_URI: ${{ secrets.BACKEND_REPO_URI }}
+  FRONTEND_REPO_URI: ${{ secrets.FRONTEND_REPO_URI }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASS: ${{ secrets.DB_PASS }}
+  DB: ${{ secrets.DB }}
+  DB_HOST: ${{ secrets.DB_HOST }}
+  backend_url: ${{ secrets.backend_url }}
+  REGION: ${{ secrets.REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+  ECRsecret: ${{ secrets.ECRsecret }}
+  ACC_NO: ${{ secrets.ACC_NO }}
+
+jobs:
+
+  docker-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Set short git commit SHA
+      id: commit
+      uses: prompt/actions-commit-hash@v2
+
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.REGION }}
+
+    - name: install kubectl utility with last
+      uses: azure/setup-kubectl@v3
+
+    - name: Login to Amazon private ECR
+      id: ecr-login
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push backend image
+      working-directory: ./backend
+      run: |
+        sudo docker build -t backend .
+        sudo docker tag backend ${{ env.BACKEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        sudo docker tag backend ${{ env.BACKEND_REPO_URI }}:latest
+        sudo docker push ${{ env.BACKEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        sudo docker push ${{ env.BACKEND_REPO_URI }}:latest
+
+    - name: Build and push frontend image
+      working-directory: ./frontend
+      run: |
+        sudo docker build -t frontend -f Dockerfile-modified .
+        sudo docker tag frontend ${{ env.FRONTEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        sudo docker tag frontend ${{ env.FRONTEND_REPO_URI }}:latest
+        sudo docker push ${{ env.FRONTEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        sudo docker push ${{ env.FRONTEND_REPO_URI }}:latest
+
+    - name: replace the environment variables in deployment file
+      run: |
+        envsubst < secret_tmp.yml > secret.yml
+        envsubst < backend-deploy_tmp.yml > backend-deploy.yml
+        envsubst < frontend-deploy_tmp.yml > frontend-deploy.yml
+
+    - name: Update kube config
+      run: |
+        mkdir ~/.kube
+        echo ${{ env.KUBECONFIG_DATA }} > ~/kubeconfig_base64.txt
+        base64 -d ~/kubeconfig_base64.txt > ~/.kube/config
+        kubectl get po -A
+
+    - name: check ecr imagepullsecrets secret
+      run: |
+        if kubectl get secret $ECRsecret --namespace default; \
+        then echo "Secret $ECRsecret already exists"; \
+        else kubectl create secret docker-registry \
+        $ECRsecret --docker-server=${{ env.ACC_NO }}.dkr.ecr.${{ env.REGION }}.amazonaws.com --docker-username=AWS --docker-password=${{ steps.login-ecr.outputs.docker_password_123456789012_dkr_ecr_ap_south_1_amazonaws_com }} --namespace=default; \
+        fi
+
+    - name: Deploy to kubernetes
+      run: |
+        kubectl apply -f secret.yml
+        kubectl apply -f backend-deploy.yml
+        kubectl apply -f backend-svc.yml
+        kubectl apply -f frontend-deploy.yml
+        kubectl apply -f frontend-svc.yml
