@@ -1,6 +1,6 @@
-FROM 654654515013.dkr.ecr.ap-south-1.amazonaws.com/python_3_7_slim:latest
+# FROM 654654515013.dkr.ecr.ap-south-1.amazonaws.com/python_3_7_slim:latest
 #using this ecr repo becouse code build has reached pull limit
-# FROM python:3.7-slim
+FROM python:3.7-slim
 #FROM python:3.6-slim
 #FROM python:3.7-slim -> use this if you are using the mysql as the db
 WORKDIR /app
