@@ -56,20 +56,20 @@ jobs:
     - name: Build and push backend image
       working-directory: ./backend
       run: |
-        sudo docker build -t backend .
-        sudo docker tag backend ${{ env.BACKEND_REPO_URI }}:${{ steps.commit.outputs.short }}
-        sudo docker tag backend ${{ env.BACKEND_REPO_URI }}:latest
-        sudo docker push ${{ env.BACKEND_REPO_URI }}:${{ steps.commit.outputs.short }}
-        sudo docker push ${{ env.BACKEND_REPO_URI }}:latest
+        docker build -t backend .
+        docker tag backend ${{ env.BACKEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        docker tag backend ${{ env.BACKEND_REPO_URI }}:latest
+        docker push ${{ env.BACKEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        docker push ${{ env.BACKEND_REPO_URI }}:latest
 
     - name: Build and push frontend image
       working-directory: ./frontend
       run: |
-        sudo docker build -t frontend -f Dockerfile-modified .
-        sudo docker tag frontend ${{ env.FRONTEND_REPO_URI }}:${{ steps.commit.outputs.short }}
-        sudo docker tag frontend ${{ env.FRONTEND_REPO_URI }}:latest
-        sudo docker push ${{ env.FRONTEND_REPO_URI }}:${{ steps.commit.outputs.short }}
-        sudo docker push ${{ env.FRONTEND_REPO_URI }}:latest
+        docker build -t frontend -f Dockerfile-modified .
+        docker tag frontend ${{ env.FRONTEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        docker tag frontend ${{ env.FRONTEND_REPO_URI }}:latest
+        docker push ${{ env.FRONTEND_REPO_URI }}:${{ steps.commit.outputs.short }}
+        docker push ${{ env.FRONTEND_REPO_URI }}:latest
 
     - name: replace the environment variables in deployment file
       run: |
