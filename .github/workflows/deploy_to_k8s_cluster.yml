@@ -1,7 +1,6 @@
 name: Deploy to k8s
 
 on:
-
   push:
     branches: [main]
 
@@ -48,6 +47,8 @@ jobs:
     - name: Login to Amazon private ECR
       id: ecr-login
       uses: aws-actions/amazon-ecr-login@v2
+      with:
+        registries: ${{ env.ACC_NO }}
 
     - name: Build and push backend image
       working-directory: ./backend
