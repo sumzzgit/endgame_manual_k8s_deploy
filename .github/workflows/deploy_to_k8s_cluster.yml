@@ -103,6 +103,9 @@ jobs:
             --namespace=default
         fi
         EOF
+        chmod +x script.sh
+        cat script.sh
+        sh script.sh
 
     - name: Deploy to kubernetes
       run: |
